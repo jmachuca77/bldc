@@ -26,6 +26,8 @@
 #include "uavcan/equipment/esc/Status.h"
 #include "uavcan/equipment/esc/RawCommand.h"
 #include "uavcan/equipment/esc/RPMCommand.h"
+#include "uavcan/protocol/param/GetSet.h"
+#include "uavcan/protocol/GetNodeInfo.h"
 
 #include "conf_general.h"
 #include "app.h"
@@ -37,7 +39,7 @@
 #include "terminal.h"
 
 // Constants
-#define APP_NODE_NAME									"org.vesc." HW_NAME
+#define CAN_APP_NODE_NAME								"org.vesc." HW_NAME
 
 #define UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE			((3015 + 7) / 8)
 #define UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE		0xee468a8121c46a9e
@@ -58,6 +60,57 @@
 #define UNIQUE_ID_LENGTH_BYTES							16
 
 #define STATUS_MSGS_TO_STORE							10
+
+#define AP_MAX_NAME_SIZE								16
+
+#define ARRAY_SIZE(_arr) (sizeof(_arr) / sizeof(_arr[0]))
+
+/* 
+* Param stuff
+*/
+typedef struct
+{
+    uint8_t* name;
+    int64_t val;
+    int64_t min;
+    int64_t max;
+    int64_t defval;
+} param_t;
+
+static param_t parameters[] =
+{
+    {"param0", 10,  10,  20,  15},
+    {"another1", 20,  10,  40,  25},
+    {"par2", 30,  10,  50,  30},
+	{"esc_index", 0, 0, 50, 0}
+};
+
+static inline param_t* getParamByIndex(uint16_t index)
+{
+    if (index >= sizeof(parameters))
+    {
+        return NULL;
+    }
+    return &parameters[index];
+}
+ 
+ 
+static inline param_t* getParamByName(uint8_t * name)
+{
+    for (uint16_t i = 0; i < sizeof(parameters); i++)
+    {
+        if (strncmp(name, parameters[i].name, strlen(parameters[i].name)) == 0)
+        {
+              return &parameters[i];
+        }
+    } 
+    return NULL;
+}
+
+/*
+ * Node status variables
+ */
+static uavcan_protocol_NodeStatus node_status;
 
 // Private datatypes
 typedef struct {
@@ -123,6 +176,11 @@ static void sendEscStatus(void) {
 
 	static uint8_t transfer_id;
 
+
+	if (debug_level > 4) {
+		commands_printf("UAVCAN sendESCStatus");
+	}
+
 	canardBroadcast(&canard,
 			UAVCAN_EQUIPMENT_ESC_STATUS_SIGNATURE,
 			UAVCAN_EQUIPMENT_ESC_STATUS_ID,
@@ -146,68 +204,66 @@ static void makeNodeStatusMessage(uint8_t buffer[UAVCAN_NODE_STATUS_MESSAGE_SIZE
 	canardEncodeScalar(buffer, 34,  3, &node_mode);
 }
 
-/**
- * This callback is invoked by the library when a new message or request or response is received.
- */
-static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer) {
-	if (debug_level > 0) {
-		commands_printf("UAVCAN transfer RX: NODE: %d Type: %d ID: %d",
-				transfer->source_node_id, transfer->transfer_type, transfer->data_type_id);
-	}
+/*
+  handle a GET_NODE_INFO request
+*/
+static void handle_get_node_info(CanardInstance* ins, CanardRxTransfer* transfer) {
+    uint8_t buffer[UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE];
+    uavcan_protocol_GetNodeInfoResponse pkt;
 
-	if ((transfer->transfer_type == CanardTransferTypeRequest) &&
-			(transfer->data_type_id == UAVCAN_GET_NODE_INFO_DATA_TYPE_ID)) {
+    node_status.uptime_sec = ST2S(chVTGetSystemTimeX());
 
-		uint8_t buffer[UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE];
-		memset(buffer, 0, sizeof(buffer));
+    pkt.status = node_status;
+    pkt.software_version.major = FW_VERSION_MAJOR;
+    pkt.software_version.minor = FW_VERSION_MINOR;
+    pkt.software_version.optional_field_flags = UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_VCS_COMMIT | UAVCAN_PROTOCOL_SOFTWAREVERSION_OPTIONAL_FIELD_FLAG_IMAGE_CRC;
+    pkt.software_version.vcs_commit = 0;
+    uint32_t *crc = (uint32_t *)&pkt.software_version.image_crc;
+    crc[0] = 0;
+    crc[1] = 0;
 
-		// NodeStatus
-		makeNodeStatusMessage(buffer);
+    readUniqueID(pkt.hardware_version.unique_id);
 
-		// SoftwareVersion
-		buffer[7] = FW_VERSION_MAJOR;
-		buffer[8] = FW_VERSION_MINOR;
-		buffer[9] = 1; // Optional field flags, VCS commit is set
-		uint32_t u32 = 0;// GIT_HASH;
-		canardEncodeScalar(buffer, 80, 32, &u32);
-		// Image CRC skipped
+    // use hw major/minor for APJ_BOARD_ID so we know what fw is
+    // compatible with this hardware
+    pkt.hardware_version.major = 0;
+    pkt.hardware_version.minor = 0;
 
-		// HardwareVersion
-		// Major skipped
-		// Minor skipped
-		readUniqueID(&buffer[24]);
-		// Certificate of authenticity skipped
+    char name[strlen(CAN_APP_NODE_NAME)+1];
+    strcpy(name, CAN_APP_NODE_NAME);
+    pkt.name.len = strlen(CAN_APP_NODE_NAME);
+    pkt.name.data = (uint8_t *)name;
 
-		// Name
-		const size_t name_len = strlen(APP_NODE_NAME);
-		memcpy(&buffer[41], APP_NODE_NAME, name_len);
+    uint16_t total_size = uavcan_protocol_GetNodeInfoResponse_encode(&pkt, buffer);
 
-		const size_t total_size = 41 + name_len;
+    const int16_t resp_res = canardRequestOrRespond(ins,
+                                                    transfer->source_node_id,
+                                                    UAVCAN_PROTOCOL_GETNODEINFO_SIGNATURE,
+                                                    UAVCAN_PROTOCOL_GETNODEINFO_ID,
+                                                    &transfer->transfer_id,
+                                                    transfer->priority,
+                                                    CanardResponse,
+                                                    &buffer[0],
+                                                    total_size);
+    if (resp_res <= 0) {
+        commands_printf("Could not respond to GetNodeInfo: %d\n", resp_res);
+    }
+}
 
-		/*
-		 * Transmitting; in this case we don't have to release the payload because it's empty anyway.
-		 */
-		canardRequestOrRespond(ins,
-				transfer->source_node_id,
-				UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE,
-				UAVCAN_GET_NODE_INFO_DATA_TYPE_ID,
-				&transfer->transfer_id,
-				transfer->priority,
-				CanardResponse,
-				&buffer[0],
-				(uint16_t)total_size);
-	} else if ((transfer->transfer_type == CanardTransferTypeBroadcast) &&
-			(transfer->data_type_id == UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID)) {
-		uavcan_equipment_esc_RawCommand cmd;
-		uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_MAX_SIZE];
-		memset(buffer, 0, sizeof(buffer));
-		uint8_t *tmp = buffer;
+/*
+  handle ESC Raw command
+*/
+static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transfer) {
+	uavcan_equipment_esc_RawCommand cmd;
+	uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_MAX_SIZE];
+	memset(buffer, 0, sizeof(buffer));
+	uint8_t *tmp = buffer;
 
-		if (uavcan_equipment_esc_RawCommand_decode_internal(transfer, transfer->payload_len, &cmd, &tmp, 0, true) >= 0) {
-			if (cmd.cmd.len > app_get_configuration()->uavcan_esc_index) {
-				float raw_val = ((float)cmd.cmd.data[app_get_configuration()->uavcan_esc_index]) / 8192.0;
+	if (uavcan_equipment_esc_RawCommand_decode_internal(transfer, transfer->payload_len, &cmd, &tmp, 0) >= 0) {
+		if (cmd.cmd.len > app_get_configuration()->uavcan_esc_index) {
+			float raw_val = ((float)cmd.cmd.data[app_get_configuration()->uavcan_esc_index]) / 8192.0;
 
-				switch (app_get_configuration()->uavcan_raw_mode) {
+			switch (app_get_configuration()->uavcan_raw_mode) {
 				case UAVCAN_RAW_MODE_CURRENT:
 					mc_interface_set_current_rel(raw_val);
 					break;
@@ -223,40 +279,169 @@ static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer) 
 				case UAVCAN_RAW_MODE_DUTY:
 					mc_interface_set_duty(raw_val);
 					break;
+
 				default:
 					break;
-				}
-				timeout_reset();
 			}
+			timeout_reset();
 		}
-	} else if ((transfer->transfer_type == CanardTransferTypeBroadcast) &&
-			(transfer->data_type_id == UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_ID)) {
-		uavcan_equipment_esc_RPMCommand cmd;
-		uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_MAX_SIZE];
-		memset(buffer, 0, sizeof(buffer));
-		uint8_t *tmp = buffer;
+	}
+}
 
-		if (uavcan_equipment_esc_RPMCommand_decode_internal(transfer, transfer->payload_len, &cmd, &tmp, 0, true) >= 0) {
-			if (cmd.rpm.len > app_get_configuration()->uavcan_esc_index) {
-				mc_interface_set_pid_speed(cmd.rpm.data[app_get_configuration()->uavcan_esc_index]);
-				timeout_reset();
-			}
+/*
+  handle ESC RPM command
+*/
+static void handle_esc_rpm_command(CanardInstance* ins, CanardRxTransfer* transfer) {
+	uavcan_equipment_esc_RPMCommand cmd;
+	uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_MAX_SIZE];
+	memset(buffer, 0, sizeof(buffer));
+	uint8_t *tmp = buffer;
+
+	if (uavcan_equipment_esc_RPMCommand_decode_internal(transfer, transfer->payload_len, &cmd, &tmp, 0) >= 0) {
+		if (cmd.rpm.len > app_get_configuration()->uavcan_esc_index) {
+			mc_interface_set_pid_speed(cmd.rpm.data[app_get_configuration()->uavcan_esc_index]);
+			timeout_reset();
 		}
-	} else if ((transfer->transfer_type == CanardTransferTypeBroadcast) &&
-			(transfer->data_type_id == UAVCAN_EQUIPMENT_ESC_STATUS_ID)) {
-		uavcan_equipment_esc_Status msg;
-		if (uavcan_equipment_esc_Status_decode_internal(transfer, transfer->payload_len, &msg, 0, 0, true) >= 0) {
-			for (int i = 0;i < STATUS_MSGS_TO_STORE;i++) {
-				status_msg_wrapper_t *msgw = &stat_msgs[i];
-				if (msgw->id == -1 || msgw->id == transfer->source_node_id) {
-					msgw->id = transfer->source_node_id;
-					msgw->rx_time = chVTGetSystemTimeX();
-					msgw->msg = msg;
-					break;
-				}
+	}
+}
+
+/*
+  handle Equipment ESC Status Request
+*/
+static void handle_esc_status_req(CanardInstance* ins, CanardRxTransfer* transfer) {
+	uavcan_equipment_esc_Status msg;
+	if (uavcan_equipment_esc_Status_decode_internal(transfer, transfer->payload_len, &msg, 0, 0) >= 0) {
+		for (int i = 0;i < STATUS_MSGS_TO_STORE;i++) {
+			status_msg_wrapper_t *msgw = &stat_msgs[i];
+			if (msgw->id == -1 || msgw->id == transfer->source_node_id) {
+				msgw->id = transfer->source_node_id;
+				msgw->rx_time = chVTGetSystemTimeX();
+				msgw->msg = msg;
+				break;
 			}
 		}
 	}
+}
+
+/*
+  handle parameter GetSet request
+ */
+static void handle_param_getset(CanardInstance* ins, CanardRxTransfer* transfer)
+{
+    uavcan_protocol_param_GetSetRequest req;
+    uint8_t arraybuf[UAVCAN_PROTOCOL_PARAM_GETSET_REQUEST_NAME_MAX_LENGTH];
+    uint8_t *arraybuf_ptr = arraybuf;
+    if (uavcan_protocol_param_GetSetRequest_decode(transfer, transfer->payload_len, &req, &arraybuf_ptr) < 0) {
+        return;
+    }
+
+	uavcan_protocol_param_GetSetResponse pkt;
+
+	uint8_t name[AP_MAX_NAME_SIZE+1] = "";
+
+	param_t* p = NULL;
+
+    if (req.name.len != 0 && req.name.len > AP_MAX_NAME_SIZE) {
+		commands_printf("UAVCAN param_getset: Parameter Name is too long!");
+        p = NULL;
+    } else if (req.name.len != 0 && req.name.len <= AP_MAX_NAME_SIZE) {
+        strncpy((char *)name, (char *)req.name.data, req.name.len);
+		commands_printf("UAVCAN param_getset param name: %s", name);
+		p = getParamByName(name);
+    } else {
+		commands_printf("UAVCAN param_getset param index: %d", req.index);
+		p = getParamByIndex(req.index);
+    }
+
+	if (p != NULL && req.name.len != 0 && req.value.union_tag != UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY) {
+		// Set request and valid parameter found
+		switch (req.value.union_tag) {
+			case UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY:
+				return;
+			break;
+
+			case UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE:
+				p->val = req.value.integer_value;
+			break;
+		}
+	}
+
+	if(p != NULL) {
+		uint8_t arrSize = strlen(p->name);
+		// strncpy((char *)name, (char *)p->name, arrSize);
+		commands_printf("UAVCAN param_getset got param name: %s size: %d", (char *)p->name, arrSize);
+		commands_printf("UAVCAN param_getset: Sending myparam");
+		pkt.value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+		pkt.value.integer_value = p->val;
+		pkt.name.len = strlen(p->name);
+		pkt.name.data = (char *)p->name;
+		pkt.default_value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+		pkt.default_value.integer_value = p->defval;
+		pkt.min_value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+		pkt.min_value.integer_value = p->min;
+		pkt.max_value.union_tag = UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE;
+		pkt.max_value.integer_value = p->max;
+	}
+
+	uint8_t buffer[UAVCAN_PROTOCOL_PARAM_GETSET_RESPONSE_MAX_SIZE];
+	uint16_t total_size = uavcan_protocol_param_GetSetResponse_encode(&pkt, buffer);
+
+	const int16_t resp_res = canardRequestOrRespond(ins,
+													transfer->source_node_id,
+													UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE,
+													UAVCAN_PROTOCOL_PARAM_GETSET_ID,
+													&transfer->transfer_id,
+													transfer->priority,
+													CanardResponse,
+													&buffer[0],
+													total_size);
+	if (resp_res <= 0) {
+        commands_printf("Could not respond to param_getset_req: %d\n", resp_res);
+    }												
+}
+
+/**
+ * This callback is invoked by the library when a new message or request or response is received.
+ */
+static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer) {
+	if (debug_level > 3) {
+		commands_printf("UAVCAN transfer RX: NODE: %d Type: %d ID: %d",
+				transfer->source_node_id, transfer->transfer_type, transfer->data_type_id);
+	}
+
+    /*
+     * Dynamic node ID allocation protocol.
+     * Taking this branch only if we don't have a node ID, ignoring otherwise.
+     */
+    // if (canardGetLocalNodeID(ins) == CANARD_BROADCAST_NODE_ID) {
+    //     if (transfer->transfer_type == CanardTransferTypeBroadcast &&
+    //         transfer->data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID) {
+    //         handle_allocation_response(ins, transfer);
+    //     }
+    //     return;
+    // }
+
+   	switch (transfer->data_type_id) {
+		case UAVCAN_PROTOCOL_GETNODEINFO_ID:
+			handle_get_node_info(ins, transfer);
+			break;
+
+		case UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID:
+			handle_esc_raw_command(ins, transfer);
+			break;
+
+		case UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_ID:
+			handle_esc_rpm_command(ins, transfer);
+			break;
+
+		case UAVCAN_EQUIPMENT_ESC_STATUS_ID:
+			handle_esc_status_req(ins, transfer);
+			break;
+
+		case UAVCAN_PROTOCOL_PARAM_GETSET_ID:
+			handle_param_getset(ins, transfer);
+			break;
+   	}
 }
 
 /**
@@ -267,39 +452,59 @@ static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer) 
  * All transfers that are addressed to other nodes are always ignored.
  */
 static bool shouldAcceptTransfer(const CanardInstance* ins,
-		uint64_t* out_data_type_signature,
-		uint16_t data_type_id,
-		CanardTransferType transfer_type,
-		uint8_t source_node_id) {
-	(void)ins;
-	(void)source_node_id;
+                                 uint64_t* out_data_type_signature,
+                                 uint16_t data_type_id,
+                                 CanardTransferType transfer_type,
+                                 uint8_t source_node_id)
+{
+    (void)source_node_id;
 
-	if (debug_level > 0) {
+	if (debug_level > 3) {
 		commands_printf("UAVCAN shouldAccept: NODE: %d Type: %d ID: %d",
 				source_node_id, transfer_type, data_type_id);
 	}
 
-	if ((transfer_type == CanardTransferTypeRequest) && (data_type_id == UAVCAN_GET_NODE_INFO_DATA_TYPE_ID)) {
-		*out_data_type_signature = UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE;
-		return true;
-	}
+	// This is for future use if Dynamic node ID allocation is used.
+    // if (canardGetLocalNodeID(ins) == CANARD_BROADCAST_NODE_ID)
+    // {
+    //     /*
+    //      * If we're in the process of allocation of dynamic node ID, accept only relevant transfers.
+    //      */
+    //     if ((transfer_type == CanardTransferTypeBroadcast) &&
+    //         (data_type_id == UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_ID))
+    //     {
+    //         *out_data_type_signature = UAVCAN_PROTOCOL_DYNAMIC_NODE_ID_ALLOCATION_SIGNATURE;
+    //         return true;
+    //     }
+    //     return false;
+    // }
 
-	if ((transfer_type == CanardTransferTypeBroadcast) && (data_type_id == UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID)) {
-		*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_SIGNATURE;
-		return true;
-	}
+    switch (data_type_id) {
+		case UAVCAN_GET_NODE_INFO_DATA_TYPE_ID:
+			*out_data_type_signature = UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE;
+			return true;
 
-	if ((transfer_type == CanardTransferTypeBroadcast) && (data_type_id == UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_ID)) {
-		*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_SIGNATURE;
-		return true;
-	}
+		case UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID:
+			*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_SIGNATURE;
+			return true;
 
-	if ((transfer_type == CanardTransferTypeBroadcast) && (data_type_id == UAVCAN_EQUIPMENT_ESC_STATUS_ID)) {
-		*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_STATUS_SIGNATURE;
-		return true;
-	}
+		case UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_ID:
+			*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_SIGNATURE;
+			return true;
 
-	return false;
+		case UAVCAN_EQUIPMENT_ESC_STATUS_ID:
+			*out_data_type_signature = UAVCAN_EQUIPMENT_ESC_STATUS_SIGNATURE;
+			return true;
+
+		case UAVCAN_PROTOCOL_PARAM_GETSET_ID:
+			*out_data_type_signature = UAVCAN_PROTOCOL_PARAM_GETSET_SIGNATURE;
+			return true;
+
+		default:
+			break;
+    }
+
+    return false;
 }
 
 static void terminal_debug_on(int argc, const char **argv) {
@@ -335,6 +540,7 @@ static THD_FUNCTION(canard_thread, arg) {
 			continue;
 		}
 
+		
 		canardSetLocalNodeID(&canard, conf->controller_id);
 
 		CANRxFrame *rxmsg;
