@@ -79,7 +79,7 @@ typedef struct
     float min;
     float max;
     float defval;
-	uint8_t* pointer;
+	float* pointer;
 } param_t;
 
 enum ap_var_type {
@@ -94,100 +94,100 @@ enum ap_var_type {
 
 static param_t parameters[] =
 {
-	{"app_to_use", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-    {"vesc_id", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-    {"timeout", 		AP_PARAM_INT32, 0, 0, 0, 0, NULL},
-    {"timeout_bk_curr",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"can_stat_mode", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"can_stat_rate", 	AP_PARAM_INT32, 0, 0, 0, 0, NULL},
-	{"can_baud_rate", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"pairing_done", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"en_perm_uart", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"shutdown_mode", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"can_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"uavcan_index", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"uavcan_raw_md", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"motor_type", 			AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"inv_mot_dir", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"sensor_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"abi_enc_cnt", 		AP_PARAM_INT32,	0, 0, 0, 0, NULL},
-	{"l_curr_max",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_curr_min",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_in_curr_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_in_curr_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_abs_curr_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_min_erpm",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_max_erpm",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_erpm_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_max_erpm_fbk",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_max_erpm_fbkcc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_min_vin",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_max_vin",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_batt_cut_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_batt_cut_end",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_slow_abs_curr",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"l_tmp_fet_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_tmp_fet_end",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_tmp_mot_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_tmp_mot_end",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_tmp_accel_dec",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_min_duty",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_max_duty",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_watt_max",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_watt_min",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_curr_max_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_curr_min_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"l_duty_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"pwm_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{"comm_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{"motor_type",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{"sensor_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{"sl_min_erpm",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_minerpm_int_l", 	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_mx_fb_curdirc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_cycle_int_lim",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_ph_adv_at_br",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_cycint_rpm_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"sl_bemf_coup_k",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"hall_table_0",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_1",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_2",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_3",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_4",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_5",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_6",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_table_7",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{"hall_sl_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_current_kp",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_current_ki",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_f_sw",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_dt_us",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_offset",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_inverted", 	AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{"foc_enc_ratio",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_sin_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_sin_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_cos_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_enc_cos_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_encsincosflt",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_mot_l",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_mot_ld_lq_df",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_mot_r",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_mot_flux_lnk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_obs_gain",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_obs_gain_sl",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_pll_kp",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_pll_ki",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_dty_dwrmp_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_dty_dwrmp_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_oplp_rpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_oplp_rpm_low",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_d_gn_scl_st",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_d_gn_scl_mxm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_sl_oplp_hyst",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_sl_oplp_tm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_sl_oplp_tm_l",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{"foc_sl_oplp_tm_r",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"app_to_use",	 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+    {(uint8_t *)"vesc_id", 			AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+    {(uint8_t *)"timeout", 			AP_PARAM_INT32, 0, 0, 0, 0, NULL},
+    {(uint8_t *)"timeout_bk_curr",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"can_stat_mode", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"can_stat_rate", 	AP_PARAM_INT32, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"can_baud_rate", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"pairing_done", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"en_perm_uart", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"shutdown_mode", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"can_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"uavcan_index", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"uavcan_raw_md", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"motor_type", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"inv_mot_dir", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"sensor_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"abi_enc_cnt", 		AP_PARAM_INT32,	0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_curr_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_curr_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_in_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_in_curr_min",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_abs_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_max_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_erpm_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_max_erpm_fbk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_max_erpm_fbkcc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_min_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_max_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_batt_cut_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_batt_cut_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_slow_abs_curr",	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_tmp_fet_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_tmp_fet_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_tmp_mot_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_tmp_mot_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_tmp_accel_dec",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_min_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_max_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_watt_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_watt_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_curr_max_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_curr_min_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"l_duty_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"pwm_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	{(uint8_t *)"comm_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	{(uint8_t *)"motor_type",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	{(uint8_t *)"sensor_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_minerpm_int_l", AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_mx_fb_curdirc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_cycle_int_lim",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_ph_adv_at_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_cycint_rpm_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"sl_bemf_coup_k",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_0",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_1",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_2",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_3",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_4",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_5",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_6",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_table_7",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	{(uint8_t *)"hall_sl_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_current_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_current_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_f_sw",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_dt_us",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_offset",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_inverted", AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_ratio",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_sin_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_sin_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_cos_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_enc_cos_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_encsincosflt",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_mot_l",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_mot_ld_lq_df",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_mot_r",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_mot_flux_lnk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_obs_gain",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_obs_gain_sl",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_pll_kp",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_pll_ki",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_dty_dwrmp_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_dty_dwrmp_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_oplp_rpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_oplp_rpm_low",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_d_gn_scl_st",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_d_gn_scl_mxm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_sl_oplp_hyst",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_sl_oplp_tm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_sl_oplp_tm_l",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	{(uint8_t *)"foc_sl_oplp_tm_r",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
 };
 
 static inline param_t* getParamByIndex(uint16_t index)
@@ -219,7 +219,7 @@ static inline void updateParamByName(uint8_t * name, float value)
 	p = getParamByName(name);
 	if (p != NULL) {
 		if(p->val != value) {
-		commands_printf("%s, %s p->val %0.02f, value %0.02f", p->name, name, p->val, value);	
+		commands_printf("%s, %s p->val %0.02f, value %0.02f", p->name, name, (double)p->val, (double)value);	
 		p->val = value;
 		}
 	} else {
@@ -262,6 +262,7 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 		CanardTransferType transfer_type,
 		uint8_t source_node_id);
 static void terminal_debug_on(int argc, const char **argv);
+static void update_params(void);
 
 void canard_driver_init(void) {
 	debug_level = 0;
@@ -373,7 +374,7 @@ static void handle_get_node_info(CanardInstance* ins, CanardRxTransfer* transfer
 /*
   handle ESC Raw command
 */
-static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transfer) {
+static void handle_esc_raw_command(CanardRxTransfer* transfer) {
 	uavcan_equipment_esc_RawCommand cmd;
 	uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_MAX_SIZE];
 	memset(buffer, 0, sizeof(buffer));
@@ -411,7 +412,7 @@ static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transf
 /*
   handle ESC RPM command
 */
-static void handle_esc_rpm_command(CanardInstance* ins, CanardRxTransfer* transfer) {
+static void handle_esc_rpm_command(CanardRxTransfer* transfer) {
 	uavcan_equipment_esc_RPMCommand cmd;
 	uint8_t buffer[UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_MAX_SIZE];
 	memset(buffer, 0, sizeof(buffer));
@@ -428,7 +429,7 @@ static void handle_esc_rpm_command(CanardInstance* ins, CanardRxTransfer* transf
 /*
   handle Equipment ESC Status Request
 */
-static void handle_esc_status_req(CanardInstance* ins, CanardRxTransfer* transfer) {
+static void handle_esc_status_req(CanardRxTransfer* transfer) {
 	uavcan_equipment_esc_Status msg;
 	if (uavcan_equipment_esc_Status_decode_internal(transfer, transfer->payload_len, &msg, 0, 0) >= 0) {
 		for (int i = 0;i < STATUS_MSGS_TO_STORE;i++) {
@@ -446,6 +447,11 @@ static void handle_esc_status_req(CanardInstance* ins, CanardRxTransfer* transfe
 static void update_params() 
 {
 	const app_configuration *conf = app_get_configuration();
+	// for name in parameters:
+	// 	if param[name].type = AP_PARAM_INT8:
+	// 		updateParamByName(name, pass pointer to int8)
+	// 	if param[name].type = AP_PARAM_INT8:
+	// 		updateParamByName(name, pass pointer to int8)
 	updateParamByName((uint8_t *)"app_to_use", 			conf->app_to_use);
 	updateParamByName((uint8_t *)"vesc_id", 			conf->controller_id);
 	updateParamByName((uint8_t *)"timeout", 			conf->timeout_msec );	
@@ -583,18 +589,19 @@ static void handle_param_getset(CanardInstance* ins, CanardRxTransfer* transfer)
 	if (p != NULL && req.name.len != 0 && req.value.union_tag != UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY) {
 		// Set request and valid parameter found
 		switch (req.value.union_tag) {
-			case UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY:
-				return;
-			break;
-
 			case UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE:
 				p->val = req.value.integer_value;
 			break;
+
+			case UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY:
+			default:
+			return;
+
 		}
 	}
 
 	if(p != NULL) {
-		uint8_t arrSize = strlen(p->name);
+		// uint8_t arrSize = strlen((char *)p->name);
 		// strncpy((char *)name, (char *)p->name, arrSize);
 		// commands_printf("UAVCAN param_getset got param name: %s size: %d", (char *)p->name, arrSize);
 		// commands_printf("UAVCAN param_getset: value: %0.02f", p->val);
@@ -645,8 +652,8 @@ static void handle_param_getset(CanardInstance* ins, CanardRxTransfer* transfer)
 			break;
 		}
 		
-		pkt.name.len = strlen(p->name);
-		pkt.name.data = (char *)p->name;
+		pkt.name.len = strlen((char *)p->name);
+		pkt.name.data = (uint8_t *)p->name;
 		
 	}
 
@@ -694,15 +701,15 @@ static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer) 
 			break;
 
 		case UAVCAN_EQUIPMENT_ESC_RAWCOMMAND_ID:
-			handle_esc_raw_command(ins, transfer);
+			handle_esc_raw_command(transfer);
 			break;
 
 		case UAVCAN_EQUIPMENT_ESC_RPMCOMMAND_ID:
-			handle_esc_rpm_command(ins, transfer);
+			handle_esc_rpm_command(transfer);
 			break;
 
 		case UAVCAN_EQUIPMENT_ESC_STATUS_ID:
-			handle_esc_status_req(ins, transfer);
+			handle_esc_status_req(transfer);
 			break;
 
 		case UAVCAN_PROTOCOL_PARAM_GETSET_ID:
