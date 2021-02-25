@@ -107,87 +107,87 @@ static param_t parameters[] =
 	{(uint8_t *)"can_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
 	{(uint8_t *)"uavcan_index", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
 	{(uint8_t *)"uavcan_raw_md", 	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"motor_type", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"inv_mot_dir", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"sensor_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"abi_enc_cnt", 		AP_PARAM_INT32,	0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_curr_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_curr_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_in_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_in_curr_min",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_abs_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_max_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_erpm_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_max_erpm_fbk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_max_erpm_fbkcc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_min_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_max_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_batt_cut_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_batt_cut_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_slow_abs_curr",	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_tmp_fet_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_tmp_fet_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_tmp_mot_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_tmp_mot_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_tmp_accel_dec",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_min_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_max_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_watt_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_watt_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_curr_max_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_curr_min_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"l_duty_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"pwm_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{(uint8_t *)"comm_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{(uint8_t *)"motor_type",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{(uint8_t *)"sensor_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_minerpm_int_l", AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_mx_fb_curdirc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_cycle_int_lim",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_ph_adv_at_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_cycint_rpm_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"sl_bemf_coup_k",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_0",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_1",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_2",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_3",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_4",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_5",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_6",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_table_7",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
-	{(uint8_t *)"hall_sl_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_current_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_current_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_f_sw",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_dt_us",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_offset",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_inverted", AP_PARAM_INT8,  0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_ratio",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_sin_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_sin_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_cos_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_enc_cos_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_encsincosflt",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_mot_l",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_mot_ld_lq_df",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_mot_r",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_mot_flux_lnk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_obs_gain",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_obs_gain_sl",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_pll_kp",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_pll_ki",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_dty_dwrmp_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_dty_dwrmp_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_oplp_rpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_oplp_rpm_low",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_d_gn_scl_st",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_d_gn_scl_mxm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_sl_oplp_hyst",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_sl_oplp_tm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_sl_oplp_tm_l",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
-	{(uint8_t *)"foc_sl_oplp_tm_r",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"motor_type", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"inv_mot_dir", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sensor_mode", 		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"abi_enc_cnt", 		AP_PARAM_INT32,	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_curr_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_curr_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_in_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_in_curr_min",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_abs_curr_max",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_max_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_erpm_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_max_erpm_fbk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_max_erpm_fbkcc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_min_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_max_vin",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_batt_cut_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_batt_cut_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_slow_abs_curr",	AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_tmp_fet_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_tmp_fet_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_tmp_mot_start",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_tmp_mot_end",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_tmp_accel_dec",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_min_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_max_duty",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_watt_max",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_watt_min",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_curr_max_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_curr_min_scale",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"l_duty_start",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"pwm_mode",			AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	// {(uint8_t *)"comm_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	// {(uint8_t *)"motor_type",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sensor_mode",		AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_min_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_minerpm_int_l", AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_mx_fb_curdirc",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_cycle_int_lim",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_ph_adv_at_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_cycint_rpm_br",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"sl_bemf_coup_k",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_0",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_1",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_2",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_3",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_4",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_5",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_6",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_table_7",		AP_PARAM_INT8, 	0, 0, 0, 0, NULL},
+	// {(uint8_t *)"hall_sl_erpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_current_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_current_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_f_sw",			AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_dt_us",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_offset",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_inverted", AP_PARAM_INT8,  0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_ratio",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_sin_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_sin_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_cos_offs",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_enc_cos_gain",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_encsincosflt",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_mot_l",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_mot_ld_lq_df",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_mot_r",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_mot_flux_lnk",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_obs_gain",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_obs_gain_sl",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_pll_kp",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_pll_ki",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_dty_dwrmp_kp",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_dty_dwrmp_ki",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_oplp_rpm",		AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_oplp_rpm_low",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_d_gn_scl_st",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_d_gn_scl_mxm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_sl_oplp_hyst",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_sl_oplp_tm",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_sl_oplp_tm_l",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
+	// {(uint8_t *)"foc_sl_oplp_tm_r",	AP_PARAM_FLOAT, 0, 0, 0, 0, NULL},
 };
 
 static inline param_t* getParamByIndex(uint16_t index)
@@ -263,6 +263,7 @@ static bool shouldAcceptTransfer(const CanardInstance* ins,
 		uint8_t source_node_id);
 static void terminal_debug_on(int argc, const char **argv);
 static void update_params(void);
+static void update_app_conf(void);
 
 void canard_driver_init(void) {
 	debug_level = 0;
@@ -444,6 +445,29 @@ static void handle_esc_status_req(CanardRxTransfer* transfer) {
 	}
 }
 
+static void update_app_conf() 
+{
+	app_configuration *conf = app_get_configuration();
+
+	conf->app_to_use = getParamByIndex(0)->val;
+	conf->controller_id = getParamByIndex(1)->val;
+	conf->timeout_msec = getParamByIndex(2)->val;
+	conf->timeout_brake_current = getParamByIndex(3)->val;
+	conf->send_can_status = getParamByIndex(4)->val;
+	conf->send_can_status_rate_hz = getParamByIndex(5)->val;
+	conf->can_baud_rate = getParamByIndex(6)->val;
+	conf->pairing_done = getParamByIndex(7)->val;
+	conf->permanent_uart_enabled = getParamByIndex(8)->val;
+	conf->shutdown_mode = getParamByIndex(9)->val;
+	conf->can_mode = getParamByIndex(10)->val;
+	conf->uavcan_esc_index = getParamByIndex(11)->val;
+	conf->uavcan_raw_mode = getParamByIndex(12)->val;
+	commands_printf("Updating App conf EEPROM");
+	conf_general_store_app_configuration(conf);
+	commands_printf("Updating App conf");
+	app_set_configuration(conf);
+}
+
 static void update_params() 
 {
 	const app_configuration *conf = app_get_configuration();
@@ -466,90 +490,90 @@ static void update_params()
 	updateParamByName((uint8_t *)"uavcan_index", 		conf->uavcan_esc_index );	
 	updateParamByName((uint8_t *)"uavcan_raw_md", 		conf->uavcan_raw_mode );	
 
-	mc_configuration *mcconf = mc_interface_get_configuration();
-	// Motor Conf General Tab
-	updateParamByName((uint8_t *)"motor_type", 			mcconf->motor_type );
-	updateParamByName((uint8_t *)"inv_mot_dir", 		mcconf->m_invert_direction );
-	updateParamByName((uint8_t *)"sensor_mode", 		mcconf->sensor_mode );
-	updateParamByName((uint8_t *)"abi_enc_cnt", 		mcconf->m_encoder_counts );
+	// mc_configuration *mcconf = mc_interface_get_configuration();
+	// // Motor Conf General Tab
+	// updateParamByName((uint8_t *)"motor_type", 			mcconf->motor_type );
+	// updateParamByName((uint8_t *)"inv_mot_dir", 		mcconf->m_invert_direction );
+	// updateParamByName((uint8_t *)"sensor_mode", 		mcconf->sensor_mode );
+	// updateParamByName((uint8_t *)"abi_enc_cnt", 		mcconf->m_encoder_counts );
 
-	updateParamByName((uint8_t *)"l_curr_max",			mcconf->l_current_max		);
-	updateParamByName((uint8_t *)"l_curr_min",			mcconf->l_current_min		);
-	updateParamByName((uint8_t *)"l_in_curr_max",		mcconf->l_in_current_max	);
-	updateParamByName((uint8_t *)"l_in_curr_min",		mcconf->l_in_current_min	);
-	updateParamByName((uint8_t *)"l_abs_curr_max",		mcconf->l_abs_current_max	);
-	updateParamByName((uint8_t *)"l_min_erpm",			mcconf->l_min_erpm			);
-	updateParamByName((uint8_t *)"l_max_erpm",			mcconf->l_max_erpm			);
-	updateParamByName((uint8_t *)"l_erpm_start",		mcconf->l_erpm_start		);
-	updateParamByName((uint8_t *)"l_max_erpm_fbk",		mcconf->l_max_erpm_fbrake	);
-	updateParamByName((uint8_t *)"l_max_erpm_fbkcc",	mcconf->l_max_erpm_fbrake_cc);
-	updateParamByName((uint8_t *)"l_min_vin",			mcconf->l_min_vin			);
-	updateParamByName((uint8_t *)"l_max_vin",			mcconf->l_max_vin			);
-	updateParamByName((uint8_t *)"l_batt_cut_start",	mcconf->l_battery_cut_start );
-	updateParamByName((uint8_t *)"l_batt_cut_end",		mcconf->l_battery_cut_end	);
-	updateParamByName((uint8_t *)"l_slow_abs_curr",		mcconf->l_slow_abs_current	);
-	updateParamByName((uint8_t *)"l_tmp_fet_start",		mcconf->l_temp_fet_start	);
-	updateParamByName((uint8_t *)"l_tmp_fet_end",		mcconf->l_temp_fet_end		);
-	updateParamByName((uint8_t *)"l_tmp_mot_start",		mcconf->l_temp_motor_start	);
-	updateParamByName((uint8_t *)"l_tmp_mot_end",		mcconf->l_temp_motor_end	);
-	updateParamByName((uint8_t *)"l_tmp_accel_dec",		mcconf->l_temp_accel_dec	);
-	updateParamByName((uint8_t *)"l_min_duty",			mcconf->l_min_duty			);
-	updateParamByName((uint8_t *)"l_max_duty",			mcconf->l_max_duty			);
-	updateParamByName((uint8_t *)"l_watt_max",			mcconf->l_watt_max			);
-	updateParamByName((uint8_t *)"l_watt_min",			mcconf->l_watt_min			);
-	updateParamByName((uint8_t *)"l_curr_max_scale",	mcconf->l_current_max_scale );
-	updateParamByName((uint8_t *)"l_curr_min_scale",	mcconf->l_current_min_scale );
-	updateParamByName((uint8_t *)"l_duty_start",		mcconf->l_duty_start		);
-	updateParamByName((uint8_t *)"pwm_mode", 			mcconf->pwm_mode);
-	updateParamByName((uint8_t *)"comm_mode",			mcconf->comm_mode);
-	updateParamByName((uint8_t *)"motor_type",			mcconf->motor_type);
-	updateParamByName((uint8_t *)"sensor_mode",			mcconf->sensor_mode);
-	updateParamByName((uint8_t *)"sl_min_erpm",			mcconf->sl_min_erpm);
-	updateParamByName((uint8_t *)"sl_minerpm_int_l",	mcconf->sl_min_erpm_cycle_int_limit);
-	updateParamByName((uint8_t *)"sl_mx_fb_curdirc",	mcconf->sl_max_fullbreak_current_dir_change);
-	updateParamByName((uint8_t *)"sl_cycle_int_lim",	mcconf->sl_cycle_int_limit);
-	updateParamByName((uint8_t *)"sl_ph_adv_at_br",		mcconf->sl_phase_advance_at_br);
-	updateParamByName((uint8_t *)"sl_cycint_rpm_br",	mcconf->sl_cycle_int_rpm_br);
-	updateParamByName((uint8_t *)"sl_bemf_coup_k",		mcconf->sl_bemf_coupling_k);
-	updateParamByName((uint8_t *)"hall_table_0",		mcconf->hall_table[0]);
-	updateParamByName((uint8_t *)"hall_table_1",		mcconf->hall_table[1]);
-	updateParamByName((uint8_t *)"hall_table_2",		mcconf->hall_table[2]);
-	updateParamByName((uint8_t *)"hall_table_3",		mcconf->hall_table[3]);
-	updateParamByName((uint8_t *)"hall_table_4",		mcconf->hall_table[4]);
-	updateParamByName((uint8_t *)"hall_table_5",		mcconf->hall_table[5]);
-	updateParamByName((uint8_t *)"hall_table_6",		mcconf->hall_table[6]);
-	updateParamByName((uint8_t *)"hall_table_7",		mcconf->hall_table[7]);
-	updateParamByName((uint8_t *)"hall_sl_erpm",		mcconf->hall_sl_erpm);
-	updateParamByName((uint8_t *)"foc_current_kp",		mcconf->foc_current_kp);
-	updateParamByName((uint8_t *)"foc_current_ki",		mcconf->foc_current_ki);
-	updateParamByName((uint8_t *)"foc_f_sw",			mcconf->foc_f_sw);
-	updateParamByName((uint8_t *)"foc_dt_us",			mcconf->foc_dt_us);
-	updateParamByName((uint8_t *)"foc_enc_offset",		mcconf->foc_encoder_offset);
-	updateParamByName((uint8_t *)"foc_enc_inverted",	mcconf->foc_encoder_inverted);
-	updateParamByName((uint8_t *)"foc_enc_ratio",		mcconf->foc_encoder_ratio);
-	updateParamByName((uint8_t *)"foc_enc_sin_offs",	mcconf->foc_encoder_sin_offset);
-	updateParamByName((uint8_t *)"foc_enc_sin_gain",	mcconf->foc_encoder_sin_gain);
-	updateParamByName((uint8_t *)"foc_enc_cos_offs",	mcconf->foc_encoder_cos_offset);
-	updateParamByName((uint8_t *)"foc_enc_cos_gain",	mcconf->foc_encoder_cos_gain);
-	updateParamByName((uint8_t *)"foc_encsincosflt",	mcconf->foc_encoder_sincos_filter_constant);
-	updateParamByName((uint8_t *)"foc_mot_l",			mcconf->foc_motor_l);
-	updateParamByName((uint8_t *)"foc_mot_ld_lq_df",	mcconf->foc_motor_ld_lq_diff);
-	updateParamByName((uint8_t *)"foc_mot_r",			mcconf->foc_motor_r);
-	updateParamByName((uint8_t *)"foc_mot_flux_lnk",	mcconf->foc_motor_flux_linkage);
-	updateParamByName((uint8_t *)"foc_obs_gain",		mcconf->foc_observer_gain);
-	updateParamByName((uint8_t *)"foc_obs_gain_sl",		mcconf->foc_observer_gain_slow);
-	updateParamByName((uint8_t *)"foc_pll_kp",			mcconf->foc_pll_kp);
-	updateParamByName((uint8_t *)"foc_pll_ki",			mcconf->foc_pll_ki);
-	updateParamByName((uint8_t *)"foc_dty_dwrmp_kp",	mcconf->foc_duty_dowmramp_kp);
-	updateParamByName((uint8_t *)"foc_dty_dwrmp_ki",	mcconf->foc_duty_dowmramp_ki);
-	updateParamByName((uint8_t *)"foc_oplp_rpm",		mcconf->foc_openloop_rpm);
-	updateParamByName((uint8_t *)"foc_oplp_rpm_low",	mcconf->foc_openloop_rpm_low);
-	updateParamByName((uint8_t *)"foc_d_gn_scl_st",		mcconf->foc_d_gain_scale_start);
-	updateParamByName((uint8_t *)"foc_d_gn_scl_mxm",	mcconf->foc_d_gain_scale_max_mod);
-	updateParamByName((uint8_t *)"foc_sl_oplp_hyst",	mcconf->foc_sl_openloop_hyst);
-	updateParamByName((uint8_t *)"foc_sl_oplp_tm",		mcconf->foc_sl_openloop_time);
-	updateParamByName((uint8_t *)"foc_sl_oplp_tm_l",	mcconf->foc_sl_openloop_time_lock);
-	updateParamByName((uint8_t *)"foc_sl_oplp_tm_r",	mcconf->foc_sl_openloop_time_ramp);
+	// updateParamByName((uint8_t *)"l_curr_max",			mcconf->l_current_max		);
+	// updateParamByName((uint8_t *)"l_curr_min",			mcconf->l_current_min		);
+	// updateParamByName((uint8_t *)"l_in_curr_max",		mcconf->l_in_current_max	);
+	// updateParamByName((uint8_t *)"l_in_curr_min",		mcconf->l_in_current_min	);
+	// updateParamByName((uint8_t *)"l_abs_curr_max",		mcconf->l_abs_current_max	);
+	// updateParamByName((uint8_t *)"l_min_erpm",			mcconf->l_min_erpm			);
+	// updateParamByName((uint8_t *)"l_max_erpm",			mcconf->l_max_erpm			);
+	// updateParamByName((uint8_t *)"l_erpm_start",		mcconf->l_erpm_start		);
+	// updateParamByName((uint8_t *)"l_max_erpm_fbk",		mcconf->l_max_erpm_fbrake	);
+	// updateParamByName((uint8_t *)"l_max_erpm_fbkcc",	mcconf->l_max_erpm_fbrake_cc);
+	// updateParamByName((uint8_t *)"l_min_vin",			mcconf->l_min_vin			);
+	// updateParamByName((uint8_t *)"l_max_vin",			mcconf->l_max_vin			);
+	// updateParamByName((uint8_t *)"l_batt_cut_start",	mcconf->l_battery_cut_start );
+	// updateParamByName((uint8_t *)"l_batt_cut_end",		mcconf->l_battery_cut_end	);
+	// updateParamByName((uint8_t *)"l_slow_abs_curr",		mcconf->l_slow_abs_current	);
+	// updateParamByName((uint8_t *)"l_tmp_fet_start",		mcconf->l_temp_fet_start	);
+	// updateParamByName((uint8_t *)"l_tmp_fet_end",		mcconf->l_temp_fet_end		);
+	// updateParamByName((uint8_t *)"l_tmp_mot_start",		mcconf->l_temp_motor_start	);
+	// updateParamByName((uint8_t *)"l_tmp_mot_end",		mcconf->l_temp_motor_end	);
+	// updateParamByName((uint8_t *)"l_tmp_accel_dec",		mcconf->l_temp_accel_dec	);
+	// updateParamByName((uint8_t *)"l_min_duty",			mcconf->l_min_duty			);
+	// updateParamByName((uint8_t *)"l_max_duty",			mcconf->l_max_duty			);
+	// updateParamByName((uint8_t *)"l_watt_max",			mcconf->l_watt_max			);
+	// updateParamByName((uint8_t *)"l_watt_min",			mcconf->l_watt_min			);
+	// updateParamByName((uint8_t *)"l_curr_max_scale",	mcconf->l_current_max_scale );
+	// updateParamByName((uint8_t *)"l_curr_min_scale",	mcconf->l_current_min_scale );
+	// updateParamByName((uint8_t *)"l_duty_start",		mcconf->l_duty_start		);
+	// updateParamByName((uint8_t *)"pwm_mode", 			mcconf->pwm_mode);
+	// updateParamByName((uint8_t *)"comm_mode",			mcconf->comm_mode);
+	// updateParamByName((uint8_t *)"motor_type",			mcconf->motor_type);
+	// updateParamByName((uint8_t *)"sensor_mode",			mcconf->sensor_mode);
+	// updateParamByName((uint8_t *)"sl_min_erpm",			mcconf->sl_min_erpm);
+	// updateParamByName((uint8_t *)"sl_minerpm_int_l",	mcconf->sl_min_erpm_cycle_int_limit);
+	// updateParamByName((uint8_t *)"sl_mx_fb_curdirc",	mcconf->sl_max_fullbreak_current_dir_change);
+	// updateParamByName((uint8_t *)"sl_cycle_int_lim",	mcconf->sl_cycle_int_limit);
+	// updateParamByName((uint8_t *)"sl_ph_adv_at_br",		mcconf->sl_phase_advance_at_br);
+	// updateParamByName((uint8_t *)"sl_cycint_rpm_br",	mcconf->sl_cycle_int_rpm_br);
+	// updateParamByName((uint8_t *)"sl_bemf_coup_k",		mcconf->sl_bemf_coupling_k);
+	// updateParamByName((uint8_t *)"hall_table_0",		mcconf->hall_table[0]);
+	// updateParamByName((uint8_t *)"hall_table_1",		mcconf->hall_table[1]);
+	// updateParamByName((uint8_t *)"hall_table_2",		mcconf->hall_table[2]);
+	// updateParamByName((uint8_t *)"hall_table_3",		mcconf->hall_table[3]);
+	// updateParamByName((uint8_t *)"hall_table_4",		mcconf->hall_table[4]);
+	// updateParamByName((uint8_t *)"hall_table_5",		mcconf->hall_table[5]);
+	// updateParamByName((uint8_t *)"hall_table_6",		mcconf->hall_table[6]);
+	// updateParamByName((uint8_t *)"hall_table_7",		mcconf->hall_table[7]);
+	// updateParamByName((uint8_t *)"hall_sl_erpm",		mcconf->hall_sl_erpm);
+	// updateParamByName((uint8_t *)"foc_current_kp",		mcconf->foc_current_kp);
+	// updateParamByName((uint8_t *)"foc_current_ki",		mcconf->foc_current_ki);
+	// updateParamByName((uint8_t *)"foc_f_sw",			mcconf->foc_f_sw);
+	// updateParamByName((uint8_t *)"foc_dt_us",			mcconf->foc_dt_us);
+	// updateParamByName((uint8_t *)"foc_enc_offset",		mcconf->foc_encoder_offset);
+	// updateParamByName((uint8_t *)"foc_enc_inverted",	mcconf->foc_encoder_inverted);
+	// updateParamByName((uint8_t *)"foc_enc_ratio",		mcconf->foc_encoder_ratio);
+	// updateParamByName((uint8_t *)"foc_enc_sin_offs",	mcconf->foc_encoder_sin_offset);
+	// updateParamByName((uint8_t *)"foc_enc_sin_gain",	mcconf->foc_encoder_sin_gain);
+	// updateParamByName((uint8_t *)"foc_enc_cos_offs",	mcconf->foc_encoder_cos_offset);
+	// updateParamByName((uint8_t *)"foc_enc_cos_gain",	mcconf->foc_encoder_cos_gain);
+	// updateParamByName((uint8_t *)"foc_encsincosflt",	mcconf->foc_encoder_sincos_filter_constant);
+	// updateParamByName((uint8_t *)"foc_mot_l",			mcconf->foc_motor_l);
+	// updateParamByName((uint8_t *)"foc_mot_ld_lq_df",	mcconf->foc_motor_ld_lq_diff);
+	// updateParamByName((uint8_t *)"foc_mot_r",			mcconf->foc_motor_r);
+	// updateParamByName((uint8_t *)"foc_mot_flux_lnk",	mcconf->foc_motor_flux_linkage);
+	// updateParamByName((uint8_t *)"foc_obs_gain",		mcconf->foc_observer_gain);
+	// updateParamByName((uint8_t *)"foc_obs_gain_sl",		mcconf->foc_observer_gain_slow);
+	// updateParamByName((uint8_t *)"foc_pll_kp",			mcconf->foc_pll_kp);
+	// updateParamByName((uint8_t *)"foc_pll_ki",			mcconf->foc_pll_ki);
+	// updateParamByName((uint8_t *)"foc_dty_dwrmp_kp",	mcconf->foc_duty_dowmramp_kp);
+	// updateParamByName((uint8_t *)"foc_dty_dwrmp_ki",	mcconf->foc_duty_dowmramp_ki);
+	// updateParamByName((uint8_t *)"foc_oplp_rpm",		mcconf->foc_openloop_rpm);
+	// updateParamByName((uint8_t *)"foc_oplp_rpm_low",	mcconf->foc_openloop_rpm_low);
+	// updateParamByName((uint8_t *)"foc_d_gn_scl_st",		mcconf->foc_d_gain_scale_start);
+	// updateParamByName((uint8_t *)"foc_d_gn_scl_mxm",	mcconf->foc_d_gain_scale_max_mod);
+	// updateParamByName((uint8_t *)"foc_sl_oplp_hyst",	mcconf->foc_sl_openloop_hyst);
+	// updateParamByName((uint8_t *)"foc_sl_oplp_tm",		mcconf->foc_sl_openloop_time);
+	// updateParamByName((uint8_t *)"foc_sl_oplp_tm_l",	mcconf->foc_sl_openloop_time_lock);
+	// updateParamByName((uint8_t *)"foc_sl_oplp_tm_r",	mcconf->foc_sl_openloop_time_ramp);
 
 	// mempools_free_mcconf(mcconf);
 }
@@ -566,7 +590,7 @@ static void handle_param_getset(CanardInstance* ins, CanardRxTransfer* transfer)
         return;
     }
 
-	update_params();
+	//update_params();
 
 	uavcan_protocol_param_GetSetResponse pkt;
 
@@ -586,19 +610,27 @@ static void handle_param_getset(CanardInstance* ins, CanardRxTransfer* transfer)
 		p = getParamByIndex(req.index);
     }
 
-	if (p != NULL && req.name.len != 0 && req.value.union_tag != UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY) {
-		// Set request and valid parameter found
-		switch (req.value.union_tag) {
-			case UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE:
-				p->val = req.value.integer_value;
-			break;
+	// if (p != NULL && req.name.len != 0 && req.value.union_tag != UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY) {
+	// 	// Set request and valid parameter found
+	// 	commands_printf("Got set request");
+	// 	switch (req.value.union_tag) {
+	// 		case UAVCAN_PROTOCOL_PARAM_VALUE_INTEGER_VALUE:
+	// 			commands_printf("Got Set param for %s, val: %d, new val: %d", p->name, (double)p->val, req.value.integer_value);
+	// 			p->val = req.value.integer_value;
+	// 		break;
 
-			case UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY:
-			default:
-			return;
+	// 		case UAVCAN_PROTOCOL_PARAM_VALUE_REAL_VALUE:
+	// 			commands_printf("Got Set param for %s, val: %d, new val: %0.02f", p->name, (double)p->val, (double)req.value.real_value);
+	// 			p->val = req.value.real_value;
+	// 		break;
 
-		}
-	}
+	// 		case UAVCAN_PROTOCOL_PARAM_VALUE_EMPTY:
+	// 		default:
+	// 		return;
+	// 	}
+		
+	// 	//update_app_conf();
+	// }
 
 	if(p != NULL) {
 		// uint8_t arrSize = strlen((char *)p->name);
