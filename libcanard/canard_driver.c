@@ -367,7 +367,7 @@ static void calculateTotalCurrent(void) {
 		commands_printf("Average Voltage: %0.02f", (double)avgVoltage);
 	}
 
-	// ToDo: Add a way to limit the ESC current based on the total system current consumed
+	mc_interface_set_tot_system_current(totalSysCurrent);
 }
 
 /*

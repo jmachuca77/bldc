@@ -114,6 +114,7 @@ static volatile float m_last_adc_duration_sample;
 static volatile bool m_sample_is_second_motor;
 static volatile mc_fault_code m_fault_stop_fault;
 static volatile bool m_fault_stop_is_second_motor;
+static volatile float m_tot_sys_curr_now = 0;
 
 static volatile uint32_t m_odometer_meters;
 
@@ -725,6 +726,16 @@ void mc_interface_set_brake_current(float current) {
 	default:
 		break;
 	}
+}
+
+/**
+ * Set current total system current
+ * 
+ * @param current
+ *  * Total current consumption by the other ESCs on the system
+ */
+void mc_interface_set_tot_system_current(float val) {
+	m_tot_sys_curr_now = val;
 }
 
 /**
@@ -2106,7 +2117,10 @@ static void update_override_limits(volatile motor_if_state_t *motor, volatile mc
 
 	// Note: The above code should work, but many people have reported issues with it. Leaving it
 	// disabled for now until I have done more investigation.
-	conf->lo_current_motor_max_now = conf->lo_current_max;
+	
+	// Limit max current to the maximum minus the current being consumed by others in the system.
+	conf->lo_current_motor_max_now = conf->lo_current_max - m_tot_sys_curr_now;
+	//conf->lo_current_motor_max_now = conf->lo_current_max;
 	conf->lo_current_motor_min_now = conf->lo_current_min;
 }
 

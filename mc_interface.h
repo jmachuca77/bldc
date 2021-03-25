@@ -44,6 +44,7 @@ void mc_interface_set_pid_speed(float rpm);
 void mc_interface_set_pid_pos(float pos);
 void mc_interface_set_current(float current);
 void mc_interface_set_brake_current(float current);
+void mc_interface_set_tot_system_current(float val);
 void mc_interface_set_current_rel(float val);
 void mc_interface_set_brake_current_rel(float val);
 void mc_interface_set_handbrake(float current);
