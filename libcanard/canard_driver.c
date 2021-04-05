@@ -201,7 +201,8 @@ static param_t parameters[] =
 	{"can_status_rate",	AP_PARAM_INT32,  0,   0, 100,  50},
 	{"can_send_status", AP_PARAM_INT8,   0,   0,   5,   1},
 	{"can_esc_index",   AP_PARAM_INT8,   0,   0, 255,   0},
-	{"controller_id",   AP_PARAM_INT8,   0,   0, 255,   0}
+	{"controller_id",   AP_PARAM_INT8,   0,   0, 255,   0},
+	{"curr_share_en",   AP_PARAM_INT8,   1,   0,   1,   1}
 };
 
 /*
@@ -367,7 +368,14 @@ static void calculateTotalCurrent(void) {
 		commands_printf("Average Voltage: %0.02f", (double)avgVoltage);
 	}
 
-	mc_interface_set_tot_system_current(totalSysCurrent);
+	param_t* p = getParamByName("curr_share_en");
+	if (p->val == 1) {
+		if(debug_level == 3) {
+			commands_printf("Limiting tot_system_current to: %0.02f A", (double)totalSysCurrent);
+		}
+		mc_interface_set_tot_system_current(totalSysCurrent);
+	} 
+	
 }
 
 /*
