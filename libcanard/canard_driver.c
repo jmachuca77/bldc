@@ -26,6 +26,7 @@
 #include "uavcan/equipment/esc/Status.h"
 #include "uavcan/equipment/esc/RawCommand.h"
 #include "uavcan/equipment/esc/RPMCommand.h"
+#include "uavcan/equipment/power/BatteryInfo.h"
 #include "uavcan/protocol/param/GetSet.h"
 #include "uavcan/protocol/GetNodeInfo.h"
 #include "uavcan/protocol/RestartNode.h"
@@ -82,6 +83,8 @@ static int debug_level;
 static status_msg_wrapper_t stat_msgs[STATUS_MSGS_TO_STORE];
 static uint8_t my_node_id = 0;
 static bool refresh_parameters_enabled = true;
+static float avgVoltage = 0;
+static float totalCurrent = 0;
 
 // Threads
 static THD_WORKING_AREA(canard_thread_wa, 2048);
@@ -90,6 +93,7 @@ static THD_FUNCTION(canard_thread, arg);
 // Private functions
 static void calculateTotalCurrent(void);
 static void sendEscStatus(void);
+static void sendBatteryInfo(void);
 static void readUniqueID(uint8_t* out_uid);
 static void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer);
 static bool shouldAcceptTransfer(const CanardInstance* ins,
@@ -202,7 +206,9 @@ static param_t parameters[] =
 	{"can_send_status", AP_PARAM_INT8,   0,   0,   5,   1},
 	{"can_esc_index",   AP_PARAM_INT8,   0,   0, 255,   0},
 	{"controller_id",   AP_PARAM_INT8,   0,   0, 255,   0},
-	{"curr_share_en",   AP_PARAM_INT8,   1,   0,   1,   1}
+	{"curr_share_en",   AP_PARAM_INT8,   0,   0,   1,   0},
+	{"can_crc_calc",    AP_PARAM_INT8,   0,   0,   1,   0},
+	{"can_batt_info",   AP_PARAM_INT8,   0,   0,   1,   0}
 };
 
 /*
@@ -235,13 +241,16 @@ static void write_app_config(void) {
 	app_configuration *appconf = mempools_alloc_appconf();
 	*appconf = *app_get_configuration();
 
-	appconf->can_mode = (uint8_t)getParamByName("uavcan_mode")->val;
-	appconf->can_baud_rate = (uint8_t)getParamByName("can_baud_rate")->val;
-	appconf->send_can_status_rate_hz = (uint32_t)getParamByName("can_status_rate")->val;
-	appconf->send_can_status = (uint8_t)getParamByName("can_send_status")->val;
-	appconf->uavcan_esc_index = (uint8_t)getParamByName("can_esc_index")->val;
-	appconf->controller_id = (uint8_t)getParamByName("controller_id")->val; 
-
+	appconf->can_mode 					= (uint8_t)getParamByName("uavcan_mode")->val;
+	appconf->can_baud_rate 				= (uint8_t)getParamByName("can_baud_rate")->val;
+	appconf->send_can_status_rate_hz 	= (uint32_t)getParamByName("can_status_rate")->val;
+	appconf->send_can_status 			= (uint8_t)getParamByName("can_send_status")->val;
+	appconf->uavcan_esc_index 			= (uint8_t)getParamByName("can_esc_index")->val;
+	appconf->controller_id 				= (uint8_t)getParamByName("controller_id")->val; 
+	appconf->can_fw_updt_crc_calc 		= (uint8_t)getParamByName("can_crc_calc")->val;
+	appconf->can_curr_limiting 			= (uint8_t)getParamByName("curr_share_en")->val;
+	appconf->can_batt_info_send			= (uint8_t)getParamByName("can_batt_info")->val;
+	
    	conf_general_store_app_configuration(appconf);
    	app_set_configuration(appconf);
 
@@ -265,6 +274,9 @@ static void refresh_parameters(void){
 	updateParamByName((uint8_t *)"can_send_status", appconf->send_can_status );
 	updateParamByName((uint8_t *)"can_esc_index",   appconf->uavcan_esc_index );
 	updateParamByName((uint8_t *)"controller_id",   appconf->controller_id );
+	updateParamByName((uint8_t *)"curr_share_en",   appconf->can_curr_limiting );
+	updateParamByName((uint8_t *)"can_crc_calc",    appconf->can_fw_updt_crc_calc );
+	updateParamByName((uint8_t *)"can_batt_info",   appconf->can_batt_info_send );
 }
 
 /*
@@ -336,8 +348,8 @@ void canard_driver_init(void) {
  */
 static void calculateTotalCurrent(void) {
 	// Calculate total current being consumed by the ESCs on the system
-	float totalCurrent = mc_interface_get_tot_current();
-	float avgVoltage = GET_INPUT_VOLTAGE();
+	totalCurrent = mc_interface_get_tot_current();
+	avgVoltage = GET_INPUT_VOLTAGE();
 	float totalSysCurrent = 0;
 
 	uint8_t escTotal = 1;
@@ -409,7 +421,7 @@ static void sendNodeStatus(void) {
 static void sendEscStatus(void) {
 	uint8_t buffer[UAVCAN_EQUIPMENT_ESC_STATUS_MAX_SIZE];
 	uavcan_equipment_esc_Status status;
-	status.current = mc_interface_get_tot_current();
+	status.current = mc_interface_get_tot_current_filtered();
 	status.error_count = mc_interface_get_fault();
 	status.esc_index = app_get_configuration()->uavcan_esc_index;
 	status.power_rating_pct = (fabsf(mc_interface_get_tot_current()) /
@@ -434,6 +446,37 @@ static void sendEscStatus(void) {
 		CANARD_TRANSFER_PRIORITY_LOW,
 		buffer,
 		UAVCAN_EQUIPMENT_ESC_STATUS_MAX_SIZE);
+}
+
+/*
+ * Send Battery Info Message
+ */
+static void sendBatteryInfo(void) {
+	uint8_t buffer[UAVCAN_EQUIPMENT_POWER_BATTERYINFO_MAX_SIZE];
+	uavcan_equipment_power_BatteryInfo battInfo;
+	battInfo.current = totalCurrent;
+	battInfo.voltage = avgVoltage;
+	battInfo.battery_id = 0;
+	battInfo.model_instance_id = 0;
+	battInfo.model_name.data = (uint8_t *)"VESC_SENS";
+	battInfo.status_flags = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_STATUS_FLAG_IN_USE;
+	battInfo.state_of_health_pct = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_STATE_OF_HEALTH_UNKNOWN;
+
+	uavcan_equipment_power_BatteryInfo_encode(&battInfo, buffer);
+
+	static uint8_t transfer_id;
+
+	if (debug_level > 11) {
+		commands_printf("UAVCAN sendBattInfoStatus");
+	}
+
+	canardBroadcast(&canard,
+		UAVCAN_EQUIPMENT_POWER_BATTERYINFO_SIGNATURE,
+		UAVCAN_EQUIPMENT_POWER_BATTERYINFO_ID,
+		&transfer_id,
+		CANARD_TRANSFER_PRIORITY_LOW,
+		buffer,
+		UAVCAN_EQUIPMENT_POWER_BATTERYINFO_MAX_SIZE);
 }
 
 /*
@@ -808,6 +851,8 @@ static void send_fw_read(void)
 static void handle_file_read_response(CanardInstance* ins, CanardRxTransfer* transfer) {
 	(void)ins;
 
+	uint8_t calculateCRC = getParamByName("can_crc_calc")->val;
+
 	if ((transfer->transfer_id+1)%256 != fw_update.transfer_id ||
 		transfer->source_node_id != fw_update.node_id) {
 		return;
@@ -832,8 +877,14 @@ static void handle_file_read_response(CanardInstance* ins, CanardRxTransfer* tra
 		nrf_driver_pause(2000);
 	}
 
+	uint16_t flash_res = FLASH_ERROR_OPERATION;
 	// Write to flash, skip the first 6 bytes for Size and CRC so need to add 6 always
-	uint16_t flash_res = flash_helper_write_new_app_data(fw_update.ofs+6, buf, len);
+	if(calculateCRC) {
+		flash_res = flash_helper_write_new_app_data(fw_update.ofs+6, buf, len);
+	} else {
+		flash_res = flash_helper_write_new_app_data(fw_update.ofs, buf, len);
+	}
+	
 	fw_update.ofs += len;
 	
 	// TODO: Check result and abort on failure.
@@ -866,12 +917,14 @@ static void handle_file_read_response(CanardInstance* ins, CanardRxTransfer* tra
 			commands_printf("orig nextData: 0x%08lx", (long)nextData);
 		}
 
-		// Calculate and write size and crc to start of reserved space
-		ind = 0;
-		buffer_append_uint32(sizecrc, app_size, &ind);
-		buffer_append_uint16(sizecrc, app_crc, &ind);
+		if(calculateCRC) {
+			// Calculate and write size and crc to start of reserved space
+			ind = 0;
+			buffer_append_uint32(sizecrc, app_size, &ind);
+			buffer_append_uint16(sizecrc, app_crc, &ind);
 
-		flash_res = flash_helper_write_new_app_data(0, sizecrc, sizeof(sizecrc));
+			flash_res = flash_helper_write_new_app_data(0, sizecrc, sizeof(sizecrc));
+		}
 
 		if (debug_level == 8) {
 			// Print data for debuging
@@ -1173,6 +1226,9 @@ static THD_FUNCTION(canard_thread, arg) {
 		if (ST2MS(chVTTimeElapsedSinceX(last_esc_status_time)) >= 1000 / conf->send_can_status_rate_hz && conf->send_can_status != CAN_STATUS_DISABLED) {
 			last_esc_status_time = chVTGetSystemTimeX();
 			sendEscStatus();
+			if(getParamByName("can_batt_info")->val > 0) {
+				sendBatteryInfo();
+			}
 		}
 
 		if (ST2MS(chVTTimeElapsedSinceX(last_tot_current_calc_time)) >= 1000 / CURRENT_CALC_FREQ_HZ) {

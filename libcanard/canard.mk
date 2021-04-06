@@ -3,6 +3,7 @@ CANARDSRC =	libcanard/canard.c \
 			libcanard/dsdl/uavcan/equipment/esc/esc_Status.c \
 			libcanard/dsdl/uavcan/equipment/esc/esc_RawCommand.c \
 			libcanard/dsdl/uavcan/equipment/esc/esc_RPMCommand.c \
+			libcanard/dsdl/uavcan/equipment/power/power_BatteryInfo.c \
 			libcanard/dsdl/uavcan/protocol/protocol_GetNodeInfo.c \
 			libcanard/dsdl/uavcan/protocol/protocol_HardwareVersion.c \
 			libcanard/dsdl/uavcan/protocol/protocol_NodeStatus.c \

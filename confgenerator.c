@@ -1004,4 +1004,7 @@ void confgenerator_set_defaults_appconf(app_configuration *conf) {
 	conf->imu_conf.gyro_offset_comp_fact[1] = APPCONF_IMU_G_OFFSET_COMP_FACT_1;
 	conf->imu_conf.gyro_offset_comp_fact[2] = APPCONF_IMU_G_OFFSET_COMP_FACT_2;
 	conf->imu_conf.gyro_offset_comp_clamp = APPCONF_IMU_G_OFFSET_COMP_CLAMP;
+	conf->can_fw_updt_crc_calc = APPCONF_CAN_FW_UPLOAD_CALC_CRC;
+	conf->can_curr_limiting = APPCONF_CAN_CURR_LIMITING;
+	conf->can_batt_info_send = APPCONF_CAN_BATT_INFO_SEND;
 }

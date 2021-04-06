@@ -720,6 +720,21 @@ typedef enum {
 } CAN_STATUS_MODE;
 
 typedef enum {
+	CAN_FW_UPDATE_DONT_CALC_CRC = 0,
+	CAN_FW_UPDATE_CALC_CRC
+} CAN_FW_UPDATE_CRC_CALC;
+
+typedef enum {
+	CAN_TOT_SYS_CURR_LIMIT_DISABLED = 0,
+	CAN_TOT_SYS_CURR_LIMIT_ENABLED
+} CAN_CURR_LIMITING;
+
+typedef enum {
+	CAN_BATT_INFO_DISABLED = 0,
+	CAN_BATT_INFO_ENABLED
+} CAN_BATT_INFO_SEND;
+
+typedef enum {
 	SHUTDOWN_MODE_ALWAYS_OFF = 0,
 	SHUTDOWN_MODE_ALWAYS_ON,
 	SHUTDOWN_MODE_TOGGLE_BUTTON_ONLY,
@@ -772,7 +787,8 @@ typedef enum {
 typedef enum {
 	UAVCAN_RAW_MODE_CURRENT = 0,
 	UAVCAN_RAW_MODE_CURRENT_NO_REV_BRAKE,
-	UAVCAN_RAW_MODE_DUTY
+	UAVCAN_RAW_MODE_DUTY,
+	UAVCAN_RAW_MODE_RPM
 } UAVCAN_RAW_MODE;
 
 typedef struct {
@@ -819,6 +835,13 @@ typedef struct {
 
 	// IMU Settings
 	imu_config imu_conf;
+
+	// Calculate CRC during CAN FW update
+	CAN_FW_UPDATE_CRC_CALC can_fw_updt_crc_calc;
+	// Current Limit based on CAN total system current
+	CAN_CURR_LIMITING can_curr_limiting;
+	// Send Batt Info Message
+	CAN_BATT_INFO_SEND can_batt_info_send; 
 
 	// Protect from flash corruption
 	uint16_t crc;
