@@ -208,7 +208,8 @@ static param_t parameters[] =
 	{"controller_id",   AP_PARAM_INT8,   0,   0, 255,   0},
 	{"curr_share_en",   AP_PARAM_INT8,   0,   0,   1,   0},
 	{"can_crc_calc",    AP_PARAM_INT8,   0,   0,   1,   0},
-	{"can_batt_info",   AP_PARAM_INT8,   0,   0,   1,   0}
+	{"can_batt_info",   AP_PARAM_INT8,   0,   0,   1,   0},
+	{"uavcan_raw_mode", AP_PARAM_INT8,   0,   0,   3,   0}
 };
 
 /*
@@ -250,6 +251,7 @@ static void write_app_config(void) {
 	appconf->can_fw_updt_crc_calc 		= (uint8_t)getParamByName("can_crc_calc")->val;
 	appconf->can_curr_limiting 			= (uint8_t)getParamByName("curr_share_en")->val;
 	appconf->can_batt_info_send			= (uint8_t)getParamByName("can_batt_info")->val;
+	appconf->uavcan_raw_mode			= (uint8_t)getParamByName("uavcan_raw_mode")->val;
 	
    	conf_general_store_app_configuration(appconf);
    	app_set_configuration(appconf);
@@ -277,6 +279,7 @@ static void refresh_parameters(void){
 	updateParamByName((uint8_t *)"curr_share_en",   appconf->can_curr_limiting );
 	updateParamByName((uint8_t *)"can_crc_calc",    appconf->can_fw_updt_crc_calc );
 	updateParamByName((uint8_t *)"can_batt_info",   appconf->can_batt_info_send );
+	updateParamByName((uint8_t *)"uavcan_raw_mode", appconf->uavcan_raw_mode );
 }
 
 /*
@@ -576,6 +579,10 @@ static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transf
 
 				case UAVCAN_RAW_MODE_DUTY:
 					mc_interface_set_duty(raw_val);
+					break;
+
+				case UAVCAN_RAW_MODE_RPM:
+					mc_interface_set_pid_speed_percent(raw_val);
 					break;
 
 				default:

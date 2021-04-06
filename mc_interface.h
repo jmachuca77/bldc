@@ -40,6 +40,7 @@ const char* mc_interface_fault_to_string(mc_fault_code fault);
 mc_state mc_interface_get_state(void);
 void mc_interface_set_duty(float dutyCycle);
 void mc_interface_set_duty_noramp(float dutyCycle);
+void mc_interface_set_pid_speed_percent(float percent);
 void mc_interface_set_pid_speed(float rpm);
 void mc_interface_set_pid_pos(float pos);
 void mc_interface_set_current(float current);

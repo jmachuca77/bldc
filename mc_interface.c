@@ -624,6 +624,34 @@ void mc_interface_set_duty_noramp(float dutyCycle) {
 	}
 }
 
+void mc_interface_set_pid_speed_percent(float percent) {
+	volatile motor_if_state_t *motor = motor_now();
+
+	if (fabsf(percent) > 0.001) {
+		SHUTDOWN_RESET();
+	}
+
+	if (mc_interface_try_input()) {
+		return;
+	}
+
+	float rpm = motor->m_conf.l_max_erpm * percent;
+
+	switch (motor_now()->m_conf.motor_type) {
+	case MOTOR_TYPE_BLDC:
+	case MOTOR_TYPE_DC:
+		mcpwm_set_pid_speed(DIR_MULT * rpm);
+		break;
+
+	case MOTOR_TYPE_FOC:
+		mcpwm_foc_set_pid_speed(DIR_MULT * rpm);
+		break;
+
+	default:
+		break;
+	}
+}
+
 void mc_interface_set_pid_speed(float rpm) {
 	if (fabsf(rpm) > 0.001) {
 		SHUTDOWN_RESET();
