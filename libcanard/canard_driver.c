@@ -563,6 +563,7 @@ static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transf
 	if (uavcan_equipment_esc_RawCommand_decode_internal(transfer, transfer->payload_len, &cmd, &tmp, 0) >= 0) {
 		if (cmd.cmd.len > app_get_configuration()->uavcan_esc_index) {
 			float raw_val = ((float)cmd.cmd.data[app_get_configuration()->uavcan_esc_index]) / 8192.0;
+			float rpm = 0;
 
 			switch (app_get_configuration()->uavcan_raw_mode) {
 				case UAVCAN_RAW_MODE_CURRENT:
@@ -582,7 +583,11 @@ static void handle_esc_raw_command(CanardInstance* ins, CanardRxTransfer* transf
 					break;
 
 				case UAVCAN_RAW_MODE_RPM:
-					mc_interface_set_pid_speed_percent(raw_val);
+					rpm = (mc_interface_get_configuration()->l_max_erpm * raw_val);
+					if(debug_level == 10) {
+						commands_printf("Set RPM to: %0.02f", (double)rpm);
+					}
+					mc_interface_set_pid_speed(rpm);
 					break;
 
 				default:
