@@ -209,7 +209,8 @@ static param_t parameters[] =
 	{"curr_share_en",   AP_PARAM_INT8,   0,   0,   1,   0},
 	{"can_crc_calc",    AP_PARAM_INT8,   0,   0,   1,   0},
 	{"can_batt_info",   AP_PARAM_INT8,   0,   0,   1,   0},
-	{"uavcan_raw_mode", AP_PARAM_INT8,   0,   0,   3,   0}
+	{"uavcan_raw_mode", AP_PARAM_INT8,   0,   0,   3,   0},
+	{"can_batt_id",     AP_PARAM_INT8,   0,   0, 255,   0}
 };
 
 /*
@@ -251,6 +252,7 @@ static void write_app_config(void) {
 	appconf->can_fw_updt_crc_calc 		= (uint8_t)getParamByName("can_crc_calc")->val;
 	appconf->can_curr_limiting 			= (uint8_t)getParamByName("curr_share_en")->val;
 	appconf->can_batt_info_send			= (uint8_t)getParamByName("can_batt_info")->val;
+	appconf->can_batt_id				= (uint8_t)getParamByName("can_batt_id")->val;
 	appconf->uavcan_raw_mode			= (uint8_t)getParamByName("uavcan_raw_mode")->val;
 	
    	conf_general_store_app_configuration(appconf);
@@ -279,6 +281,7 @@ static void refresh_parameters(void){
 	updateParamByName((uint8_t *)"curr_share_en",   appconf->can_curr_limiting );
 	updateParamByName((uint8_t *)"can_crc_calc",    appconf->can_fw_updt_crc_calc );
 	updateParamByName((uint8_t *)"can_batt_info",   appconf->can_batt_info_send );
+	updateParamByName((uint8_t *)"can_batt_id", 	appconf->can_batt_id );
 	updateParamByName((uint8_t *)"uavcan_raw_mode", appconf->uavcan_raw_mode );
 }
 
@@ -459,7 +462,8 @@ static void sendBatteryInfo(void) {
 	uavcan_equipment_power_BatteryInfo battInfo;
 	battInfo.current = totalCurrent;
 	battInfo.voltage = avgVoltage;
-	battInfo.battery_id = 0;
+	battInfo.temperature =  mc_interface_temp_fet_filtered() + 273.15;
+	battInfo.battery_id = getParamByName("can_batt_id")->val;
 	battInfo.model_instance_id = 0;
 	battInfo.model_name.data = (uint8_t *)"VESC_SENS";
 	battInfo.status_flags = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_STATUS_FLAG_IN_USE;

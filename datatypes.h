@@ -842,6 +842,7 @@ typedef struct {
 	CAN_CURR_LIMITING can_curr_limiting;
 	// Send Batt Info Message
 	CAN_BATT_INFO_SEND can_batt_info_send; 
+	uint8_t can_batt_id;
 
 	// Protect from flash corruption
 	uint16_t crc;
