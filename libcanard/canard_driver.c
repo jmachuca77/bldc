@@ -483,7 +483,7 @@ static void sendBatteryInfo(void) {
 	// battInfo.state_of_charge_pct
     // battInfo.state_of_charge_pct_stdev
 
-	uavcan_equipment_power_BatteryInfo_encode(&battInfo, buffer);
+	uint16_t total_size = uavcan_equipment_power_BatteryInfo_encode(&battInfo, buffer);
 
 	static uint8_t transfer_id;
 
@@ -497,7 +497,7 @@ static void sendBatteryInfo(void) {
 		&transfer_id,
 		CANARD_TRANSFER_PRIORITY_LOW,
 		buffer,
-		UAVCAN_EQUIPMENT_POWER_BATTERYINFO_MAX_SIZE);
+		total_size);
 }
 
 /*
