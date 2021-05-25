@@ -49,6 +49,7 @@
 
 // Constants
 #define CAN_APP_NODE_NAME								"org.vesc." HW_NAME
+#define CAN_BATT_INFO_NAME								"Vesc"
 #define UNIQUE_ID_LENGTH_BYTES							12
 #define STATUS_MSGS_TO_STORE							10
 #define AP_MAX_NAME_SIZE								16
@@ -465,9 +466,22 @@ static void sendBatteryInfo(void) {
 	battInfo.temperature =  mc_interface_temp_fet_filtered() + 273.15;
 	battInfo.battery_id = getParamByName("can_batt_id")->val;
 	battInfo.model_instance_id = 0;
-	battInfo.model_name.data = (uint8_t *)"VESC_SENS";
+
+	char name[strlen(CAN_BATT_INFO_NAME)+1];
+	strcpy(name, CAN_BATT_INFO_NAME);
+	battInfo.model_name.len = strlen(CAN_BATT_INFO_NAME);
+	battInfo.model_name.data = (uint8_t *)name;
+
 	battInfo.status_flags = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_STATUS_FLAG_IN_USE;
 	battInfo.state_of_health_pct = UAVCAN_EQUIPMENT_POWER_BATTERYINFO_STATE_OF_HEALTH_UNKNOWN;
+    
+    
+    // battInfo.average_power_10sec
+    // battInfo.remaining_capacity_wh
+    // battInfo.full_charge_capacity_wh
+    // battInfo.hours_to_full_charge
+	// battInfo.state_of_charge_pct
+    // battInfo.state_of_charge_pct_stdev
 
 	uavcan_equipment_power_BatteryInfo_encode(&battInfo, buffer);
 
@@ -1200,6 +1214,7 @@ static THD_FUNCTION(canard_thread, arg) {
 	systime_t last_esc_status_time = 0;
 	systime_t last_tot_current_calc_time = 0;
 	systime_t last_param_refresh = 0;
+	systime_t last_batt_info_time = 0;
 	
 	for (;;) {
 		const app_configuration *conf = app_get_configuration();
@@ -1239,12 +1254,16 @@ static THD_FUNCTION(canard_thread, arg) {
 			sendNodeStatus();
 		}
 
-		if (ST2MS(chVTTimeElapsedSinceX(last_esc_status_time)) >= 1000 / conf->send_can_status_rate_hz && conf->send_can_status != CAN_STATUS_DISABLED) {
-			last_esc_status_time = chVTGetSystemTimeX();
-			sendEscStatus();
+		if (ST2MS(chVTTimeElapsedSinceX(last_batt_info_time)) >= 1000) {
+			last_batt_info_time = chVTGetSystemTimeX();
 			if(getParamByName("can_batt_info")->val > 0) {
 				sendBatteryInfo();
 			}
+		}
+
+		if (ST2MS(chVTTimeElapsedSinceX(last_esc_status_time)) >= 1000 / conf->send_can_status_rate_hz && conf->send_can_status != CAN_STATUS_DISABLED) {
+			last_esc_status_time = chVTGetSystemTimeX();
+			sendEscStatus();
 		}
 
 		if (ST2MS(chVTTimeElapsedSinceX(last_tot_current_calc_time)) >= 1000 / CURRENT_CALC_FREQ_HZ) {
